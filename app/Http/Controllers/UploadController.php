@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
-
+use ImageUploader;
 
 class UploadController extends Controller
 {
@@ -21,26 +21,16 @@ class UploadController extends Controller
             'title' => 'required',
         ]);
         
+        
         /* post variables */
 
          $imageExtension = $request->photo->getClientOriginalExtension(); //file extension
          $imageTitle = $request->title; //photo title
          $imageContent = $request->photo; //image content
 
-
-         /* variables for upload */
-
-          $imageName = camel_case($request->title).'_'.microtime(true).'.'.$imageExtension; //name used for image
-
-
-
-        /* save image */
-
-        $imageContent->storeAs('/', 
-            $imageName, //filename 
-            'uploads' //storage disk
-        );
-        /* * */
+         /* Upload image */
+         
+         $imageName = ImageUploader::saveImage($imageContent, $imageTitle, $imageExtension);
 
 
         /* insert record into the database */
